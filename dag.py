@@ -126,7 +126,7 @@ LimpiayCargaDatos = PythonOperator(
 TestServicioV1 = BashOperator(
     task_id='TestServicioV1',
     depends_on_past=False,
-    bash_command='export HOST=localhost && cd /tmp/workflow/serviceV1/test && pytest',
+    bash_command='export HOST=localhost && cd /tmp/workflow/servicev1/test/v1 && pytest -q test.py',
     dag=dag,
 )
 
