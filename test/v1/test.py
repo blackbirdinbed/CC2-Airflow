@@ -6,7 +6,6 @@ import tempfile
 
 import pytest
 import apiv1
-apiv1.init(True)
 
 @pytest.fixture
 def client():
