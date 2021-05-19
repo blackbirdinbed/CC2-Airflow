@@ -66,14 +66,14 @@ DesempaquetaDatos = BashOperator(
 CapturaCodigoFuenteV1 = BashOperator(
     task_id='CapturaCodigoFuenteV1',
     depends_on_past=False,
-    bash_command='git clone -b service_V1 https://github.com/blackbirdinbed/CC2-Airflow.git /tmp/workflow/servicev1',
+    bash_command='git clone -b v1 https://github.com/blackbirdinbed/CC2-Airflow.git /tmp/workflow/servicev1',
     dag=dag,
 )
 
 # CapturaCodigoFuenteV2 = BashOperator(
 #     task_id='CapturaCodigoFuenteV2',
 #     depends_on_past=False,
-#     bash_command='git clone -b service_V2 https://github.com/blackbirdinbed/CC2-Airflow.git /tmp/workflow/servicev2',
+#     bash_command='git clone -b v2 https://github.com/blackbirdinbed/CC2-Airflow.git /tmp/workflow/servicev2',
 #     dag=dag,
 # )
 
@@ -111,7 +111,7 @@ def limpiaYguardaDatos():
 
     # Insert
 
-    engine = create_engine('mysql+pymysql://ivan:ivan@localhost/forecast')
+    engine = create_engine('mysql+pymysql://ivan:ivan@localhost:3307/forecast')
     merged.to_sql('forecast', con=engine, if_exists='replace')
 
 
@@ -165,12 +165,7 @@ LevantaServicios = BashOperator(
 # set_downstream()
 # set_upstream()
 
-PrepararEntorno.set_downstream(
-    [CapturaCodigoFuenteV1, CapturaCodigoFuenteV2, CapturaDatosA, CapturaDatosB])
-DesempaquetaDatos.set_upstream([CapturaDatosA, CapturaDatosB])
-DesempaquetaDatos.set_downstream(LimpiayCargaDatos)
-LevantaDB.set_upstream([CapturaCodigoFuenteV1, CapturaCodigoFuenteV2])
-LevantaDB.set_downstream(LimpiayCargaDatos)
-TestServicioV1.set_upstream([LimpiayCargaDatos, CapturaCodigoFuenteV1])
-CapturaCodigoFuenteV2.set_downstream(TestServicioV2)
-LevantaServicios.set_upstream([TestServicioV1, TestServicioV2])
+PrepararEntorno >> [CapturaCodigoFuenteV1, CapturaDatosA, CapturaDatosB, LevantaDB]
+[CapturaDatosA, CapturaDatosB] >> DesempaquetaDatos
+[DesempaquetaDatos, LevantaDB] >> LimpiayCargaDatos
+[LimpiayCargaDatos, CapturaCodigoFuenteV1] >> TestServicioV1 >> LevantaServicios

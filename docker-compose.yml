@@ -20,7 +20,7 @@ services:
       - MARIADB_MAX_ALLOWED_PACKET=128M
       - MARIADB_INNODB_LOG_FILE_SIZE=64M
     ports:
-      - 3306:3306
+      - 3307:3306
     healthcheck:
       test: ["CMD", "/usr/bin/healthcheck"]
       interval: 30s
