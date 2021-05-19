@@ -5,12 +5,12 @@ import os
 import tempfile
 
 import pytest
-import v1
+import apiv1
 
 @pytest.fixture
 def client():
-    v1.app.config['TESTING'] = True
-    client = v1.app.test_client()
+    apiv1.app.config['TESTING'] = True
+    client = apiv1.app.test_client()
 
     yield client
 
