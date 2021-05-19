@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../src/v1/')
+sys.path.append('../../src/v1/')
 
 import os
 import tempfile
