@@ -111,7 +111,7 @@ def limpiaYguardaDatos():
 
     # Insert
 
-    engine = create_engine('mysql+pymysql://ivan:ivan@localhost:3307/forecast')
+    engine = create_engine('mysql+pymysql://ivan:ivan@127.0.0.1:3307/forecast')
     merged.to_sql('forecast', con=engine, if_exists='replace')
 
 
