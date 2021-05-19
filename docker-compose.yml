@@ -38,7 +38,7 @@ services:
     environment:
       - HOST=db
     ports:
-      - 8001:9000
+      - 8001:8080
     links:
       - db
 
