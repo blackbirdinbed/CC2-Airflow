@@ -17,7 +17,7 @@ def inicio(n):
 # Ruta para ver las rutas
 @app.route('/', methods = ['GET'])
 def index():
-	return jsonify(status="OK", api_route="/servicio/v1/prediccion/<n>horas", msg="El servicio"), 200
+	return jsonify(status="OK", api_route="/servicio/v1/prediccion/<n>horas", msg="El servicio de prediccion se encuentra activo"), 200
 
 if __name__ == '__main__':
 	app.run(host='localhost', debug=True)
