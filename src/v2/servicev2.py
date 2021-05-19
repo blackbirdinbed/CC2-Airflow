@@ -8,7 +8,7 @@ class Service:
 
     def __init__(self):
         # We get the data from Tomorrow.io API
-        res = requests.get('https://api.tomorrow.io/v4/timelines?location=37.7749295,-122.4194155&fields=temperature,humidity&timesteps=1h&units=metric&apikey=' + api_key)
+        res = requests.get('https://api.tomorrow.io/v4/timelines?location=37.7749295,-122.4194155&fields=temperature,humidity&timesteps=1h&units=metric&apikey=9BE5Q3qhA5z9aR5Ncza7B6c4boUMXAZR)
         df = res.json()
 
     def predict(self, n_periods):
