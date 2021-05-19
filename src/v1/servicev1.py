@@ -11,12 +11,15 @@ hours = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00",
 
 host = os.environ["HOST"]
 
-
 class Service:
 
-    def __init__(self):
+    def __init__(self, testing):
+        test_port = ''
+        if testing:
+            test_port = ':3307'
+
         # We get a DataFrame with 1000 entries from the DB
-        engine = db.create_engine('mysql+pymysql://ivan:ivan@' + host + ':3307/forecast')
+        engine = db.create_engine('mysql+pymysql://ivan:ivan@' + host + test_port + '/forecast')
         engine.connect()
         self.df = engine.execute("SELECT * FROM forecast LIMIT 1000").fetchall()
         self.df = pd.DataFrame(data=self.df)
