@@ -34,7 +34,7 @@ services:
 
   v1:
     build: /tmp/workflow/servicev1/
-    command: gunicorn v1:app -b :8080
+    command: gunicorn apiv1:app -b :8080
     environment:
       - HOST=db
     ports:
