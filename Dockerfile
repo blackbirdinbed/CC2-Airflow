@@ -3,4 +3,4 @@ RUN mkdir /service
 WORKDIR /service
 COPY requirements.txt /service/
 RUN pip install -r requirements.txt
-COPY src/V1/* /service/
+COPY src/v1/* /service/
