@@ -1,9 +1,5 @@
 import requests
 import json
-import os
-
-api_key = os.environ["API_KEY"]
-
 class Service:
 
     def __init__(self):
