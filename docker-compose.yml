@@ -34,11 +34,11 @@ services:
 
   v1:
     build: /tmp/workflow/servicev1/
-    command: gunicorn apiv1:app -b :8081
+    command: gunicorn apiv1:app -b 0.0.0.0:8000
     environment:
-      - HOST=127.0.0.1:3307
+      - HOST=db
     ports:
-      - 8001:8081
+      - 8000:8000
     links:
       - db
 
