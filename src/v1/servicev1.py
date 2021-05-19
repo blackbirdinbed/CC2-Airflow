@@ -14,12 +14,8 @@ host = os.environ["HOST"]
 class Service:
 
     def __init__(self, testing):
-        test_port = ''
-        if testing:
-            test_port = ':3307'
-
         # We get a DataFrame with 1000 entries from the DB
-        engine = db.create_engine('mysql+pymysql://ivan:ivan@' + host + test_port + '/forecast')
+        engine = db.create_engine('mysql+pymysql://ivan:ivan@' + host + '/forecast')
         engine.connect()
         self.df = engine.execute("SELECT * FROM forecast LIMIT 1000").fetchall()
         self.df = pd.DataFrame(data=self.df)

@@ -1,9 +1,9 @@
 from flask import Flask, jsonify
 from servicev1 import Service
 
-app = Flask(__name__)
+service = Service()
 
-service = Service(app.config['TESTING'])
+app = Flask(__name__)
 
 # -------- API routes for forecasting -------- #
 
