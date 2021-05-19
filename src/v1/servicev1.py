@@ -1,7 +1,7 @@
 from statsmodels.tsa.arima_model import ARIMA
 import pandas as pd
 import pmdarima as pm
-from sqlalchemy import create_engine
+import sqlalchemy as db
 import json
 import os
 
@@ -16,8 +16,9 @@ class Service:
 
     def __init__(self):
         # We get a DataFrame with 1000 entries from the DB
-        self.engine = create_engine('mysql+pymysql://ivan:ivan@0.0.0.0:3307/forecast')
-        self.df = self.engine.execute("SELECT * FROM forecast LIMIT 1000").fetchall()
+        engine = db.create_engine('mysql+pymysql://ivan:ivan@' + host + '/forecast')
+        engine.connect()
+        self.df = engine.execute("SELECT * FROM forecast LIMIT 1000").fetchall()
         self.df = pd.DataFrame(data=self.df)
 
     def predict(self, n_periods):
