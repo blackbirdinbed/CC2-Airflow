@@ -1,16 +1,13 @@
 import sys
-sys.path.append('../../src/v1/')
-
-import os
-import tempfile
+sys.path.append('../../src/v2/')
 
 import pytest
-import apiv1
+import apiv2
 
 @pytest.fixture
 def client():
-    apiv1.app.config['TESTING'] = True
-    client = apiv1.app.test_client()
+    apiv2.app.config['TESTING'] = True
+    client = apiv2.app.test_client()
 
     yield client
 
