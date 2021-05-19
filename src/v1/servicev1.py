@@ -17,7 +17,7 @@ class Service:
     def __init__(self):
         # We get a DataFrame with 5000 entries from the DB
         self.engine = create_engine(
-            'mysql+pymysql://ivan:ivan@'+host+'/forecast')
+            'mysql+pymysql://ivan:ivan@'+host+':3307/forecast')
         self.df = self.engine.execute(
             "SELECT * FROM forecast LIMIT 5000").fetchall()
         self.df = pd.DataFrame(data=self.df)
