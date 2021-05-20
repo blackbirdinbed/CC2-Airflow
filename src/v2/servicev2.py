@@ -18,9 +18,10 @@ class Service:
     def get_json(self, n_periods):
         s = '{ "forecast": ['
         for i in range(n_periods):
-            s += '{"hour" : "'+ self.df['data']['timelines'][0]['intervals'][i]['startTime'] + \
-                '","temp": ' + self.df['data']['timelines'][0]['intervals'][i]['values']['temperature'] + \
-                ',"hum": '+ self.df['data']['timelines'][0]['intervals'][i]['values']['humidity'] +'}'
+            date = self.df['data']['timelines'][0]['intervals'][i]['startTime']
+            s += '{"hour" : "'+ date[len(date)-6:len(date)-1] + \
+                '","temp": ' + str(self.df['data']['timelines'][0]['intervals'][i]['values']['temperature']) + \
+                ',"hum": '+ str(self.df['data']['timelines'][0]['intervals'][i]['values']['humidity']) +'}'
             if i != n_periods-1:
                 s += ","
         s += ']}'
