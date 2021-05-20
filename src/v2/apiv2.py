@@ -7,7 +7,7 @@ app = Flask(__name__)
 # -------- API routes for forecasting -------- #
 
 # Prediction
-@app.route('/servicio/v1/prediccion/<n>horas', methods = ['GET'])
+@app.route('/servicio/v2/prediccion/<n>horas', methods = ['GET'])
 def inicio(n):
 	if int(n) == 24 or int(n) == 48 or int(n) == 72:
 		return jsonify(service.predict(n)), 200
