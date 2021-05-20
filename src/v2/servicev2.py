@@ -13,13 +13,14 @@ class Service:
         except:
             return "{}"
 
-        return self.df
+        return self.get_json(n_periods)
 
-    def get_json(self, n_periods, fc_H, fc_T):
+    def get_json(self, n_periods):
         s = '{ "forecast": ['
         for i in range(n_periods):
-            s += '{"hour" : "'+str(hours[i % 24])+'","temp": ' + \
-                str(fc_T[i])+',"hum": '+str(fc_H[i])+'}'
+            s += '{"hour" : "'+ self.df['data']['timelines'][0]['intervals'][i]['startTime'] + \
+                '","temp": ' + self.df['data']['timelines'][0]['intervals'][i]['temperature'] + \
+                ',"hum": '+ self.df['data']['timelines'][0]['intervals'][i]['humidity'] +'}'
             if i != n_periods-1:
                 s += ","
         s += ']}'
