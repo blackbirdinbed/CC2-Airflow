@@ -20,7 +20,7 @@ services:
       - MARIADB_MAX_ALLOWED_PACKET=128M
       - MARIADB_INNODB_LOG_FILE_SIZE=64M
     ports:
-      - 3307:3306
+      - 3306:3306
     healthcheck:
       test: ["CMD", "/usr/bin/healthcheck"]
       interval: 30s
@@ -42,10 +42,10 @@ services:
     links:
       - db
 
-#   v2:
-#     build: /tmp/workflow/servicev2/
-#     command: gunicorn v2:app -b :8080
-#     environment:
-#       - API_KEY="YOUR API KEY (AEMET)"
-#     ports:
-#       - 8002:8080
+  v2:
+    build: /tmp/workflow/servicev2/
+    command: gunicorn apiv2:app -b 0.0.0.0:8001
+    environment:
+      - API_KEY=9BE5Q3qhA5z9aR5Ncza7B6c4boUMXAZR
+    ports:
+      - 8001:8001

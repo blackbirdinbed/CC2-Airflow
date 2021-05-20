@@ -29,8 +29,8 @@ dag = DAG(
 
 # Prepare the route of the workflow
 
-PrepararEntorno = BashOperator(
-    task_id='PrepararEntorno',
+GetReady = BashOperator(
+    task_id='GetReady',
     depends_on_past=False,
     bash_command='mkdir /tmp/workflow/',
     dag=dag,
@@ -38,15 +38,15 @@ PrepararEntorno = BashOperator(
 
 # Download the data sources
 
-CapturaDatosA = BashOperator(
-    task_id='CapturaDatosA',
+DownloadDataA = BashOperator(
+    task_id='DownloadDataA',
     depends_on_past=False,
     bash_command='wget --output-document /tmp/workflow/humidity.csv.zip https://github.com/manuparra/MaterialCC2020/raw/master/humidity.csv.zip',
     dag=dag,
 )
 
-CapturaDatosB = BashOperator(
-    task_id='CapturaDatosB',
+DownloadDataB = BashOperator(
+    task_id='DownloadDataB',
     depends_on_past=False,
     bash_command='curl -L -o /tmp/workflow/temperature.csv.zip https://github.com/manuparra/MaterialCC2020/raw/master/temperature.csv.zip',
     dag=dag,
@@ -54,8 +54,8 @@ CapturaDatosB = BashOperator(
 
 # Unzip
 
-DesempaquetaDatos = BashOperator(
-    task_id='DesempaquetaDatos',
+Unzip = BashOperator(
+    task_id='Unzip',
     depends_on_past=False,
     bash_command='unzip "/tmp/workflow/*.csv.zip" -d /tmp/workflow/',
     dag=dag,
@@ -63,24 +63,24 @@ DesempaquetaDatos = BashOperator(
 
 # Clone the services from our repository
 
-CapturaCodigoFuenteV1 = BashOperator(
-    task_id='CapturaCodigoFuenteV1',
+CloneSourceV1 = BashOperator(
+    task_id='CloneSourceV1',
     depends_on_past=False,
     bash_command='git clone -b v1 https://github.com/blackbirdinbed/CC2-Airflow.git /tmp/workflow/servicev1',
     dag=dag,
 )
 
-# CapturaCodigoFuenteV2 = BashOperator(
-#     task_id='CapturaCodigoFuenteV2',
-#     depends_on_past=False,
-#     bash_command='git clone -b v2 https://github.com/blackbirdinbed/CC2-Airflow.git /tmp/workflow/servicev2',
-#     dag=dag,
-# )
+CloneSourceV2 = BashOperator(
+    task_id='CloneSourceV2',
+    depends_on_past=False,
+    bash_command='git clone -b v2 https://github.com/blackbirdinbed/CC2-Airflow.git /tmp/workflow/servicev2',
+    dag=dag,
+)
 
 # Set up the DB
 
-LevantaDB = BashOperator(
-    task_id='LevantaDB',
+SetDB = BashOperator(
+    task_id='SetDB',
     depends_on_past=False,
     bash_command='docker-compose -f ~/airflow/dags/docker-compose.yml up -d db',
     dag=dag,
@@ -89,7 +89,7 @@ LevantaDB = BashOperator(
 # Prepare the data and insert in the DB
 
 
-def limpiaYguardaDatos():
+def prepare_data():
 
     # Prepare
 
@@ -111,61 +111,46 @@ def limpiaYguardaDatos():
 
     # Insert
 
-    engine = create_engine('mysql+pymysql://ivan:ivan@127.0.0.1:3307/forecast')
+    engine = create_engine('mysql+pymysql://ivan:ivan@localhost/forecast')
     merged.to_sql('forecast', con=engine, if_exists='replace')
 
 
-LimpiayCargaDatos = PythonOperator(
+PrepareData = PythonOperator(
     task_id='LimpiaCargaDatos',
-    python_callable=limpiaYguardaDatos,
+    python_callable=prepare_data,
     dag=dag,
 )
 
 # Tests
 
-TestServicioV1 = BashOperator(
-    task_id='TestServicioV1',
+TestServiceV1 = BashOperator(
+    task_id='TestServiceV1',
     depends_on_past=False,
     bash_command='export HOST=localhost && cd /tmp/workflow/servicev1/test/v1 && pytest -q test.py',
     dag=dag,
 )
 
-# TestServicioV2 = BashOperator(
-#     task_id='TestServicioV2',
-#     depends_on_past=False,
-#     bash_command='export API_KEY=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpbWlndWVsMTBAY29ycmVvLnVnci5lcyIsImp0aSI6IjZkYjYwZjc4LWE4OTktNDJkYy1iZWNiLWJjNGIzNTJjNDAxNSIsImlzcyI6IkFFTUVUIiwiaWF0IjoxNTg1MjM3NDI0LCJ1c2VySWQiOiI2ZGI2MGY3OC1hODk5LTQyZGMtYmVjYi1iYzRiMzUyYzQwMTUiLCJyb2xlIjoiIn0.eSfvLaehV_s3IdnpQ7fmMdNtYc8b3Kg28MKJHE6MN1o && cd /tmp/workflow/serviceV2/test && pytest',
-#     dag=dag,
-# )
+TestServiceV2 = BashOperator(
+    task_id='TestServiceV2',
+    depends_on_past=False,
+    bash_command='export HOST=localhost && cd /tmp/workflow/servicev2/test/v2 && pytest -q test.py',
+    dag=dag,
+)
 
 # Run the containers
 
-LevantaServicios = BashOperator(
-    task_id='LevantaServicios',
+RunServices = BashOperator(
+    task_id='RunServices',
     depends_on_past=False,
     bash_command='docker-compose -f ~/airflow/dags/docker-compose.yml up -d',
     dag=dag,
 )
 
-# TAREAS
+# -------- Dependencies -------- #
 
-# PrepararEntorno
-# CapturaCodigoFuenteV1
-# CapturaCodigoFuenteV2
-# CapturaDatosA
-# CapturaDatosB
-# DesempaquetaDatos
-# LevantaDB
-# LimpiayCargaDatos
-# TestServicioV1
-# TestServicioV2
-# LevantaServicios
-
-# DEPENDENCIAS
-
-# set_downstream()
-# set_upstream()
-
-PrepararEntorno >> [CapturaCodigoFuenteV1, CapturaDatosA, CapturaDatosB, LevantaDB]
-[CapturaDatosA, CapturaDatosB] >> DesempaquetaDatos
-[DesempaquetaDatos, LevantaDB] >> LimpiayCargaDatos
-[LimpiayCargaDatos, CapturaCodigoFuenteV1] >> TestServicioV1 >> LevantaServicios
+GetReady >> [CloneSourceV1, CloneSourceV2, DownloadDataA, DownloadDataB, SetDB]
+[DownloadDataA, DownloadDataB] >> Unzip
+[Unzip, SetDB] >> PrepareData
+[PrepareData, CloneSourceV1] >> TestServiceV1
+CloneSourceV2 >> TestServiceV2
+[TestServiceV1, TestServiceV2] >> RunServices
